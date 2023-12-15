@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tarefas App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin-top: 10px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tarefas</h1>
+    <!-- Thymeleaf form -->
+    <form th:action="${t==null?'/criar':'/atualizar'}" method="POST">
+        <label>Nome: </label>
+        <input th:if="${t!=null}" type="text" name="nome"
+               required maxlength="200"
+               th:value="${t?.getNome()}"><br>
+        <label>Prioridade: </label>
+        <select name="prioridade" 
+                required>
+            <option value="">
+                -- selecione --</option>
+            <option value="1" th:selected="${t?.getPrioridade() == 1}">Alta</option>
+            <option value="2" th:selected="${t?.getPrioridade() == 2}">Média</option>
+            <option value="3" th:selected="${t?.getPrioridade() == 3}">Baixa</option>
+        </select><br>
+        <label>Descrição</label>
+        <textarea name="descricao"
+                  rows="5" cols="15"
+                  th:text="${t?.getDescricao()}"></textarea>
+        <button type="submit" th:text="${t == null ? 'Criar' : 'Atualizar'}"></button>
+    </form>
+    <a href="/">Nova Tarefa</a>
+    
+    <!-- Tabela de tarefas -->
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Prioridade</th>
+                <th>Feita?</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop sobre as tarefas -->
+            <tr th:each="tarefa : ${tarefas}">
+                <td th:text="${tarefa.getNome()}"></td>
+                <td th:text="${tarefa.getDescricao()}"></td>
+                <td th:text="${tarefa.getPrioridade()}"></td>
+                <td th:text="${tarefa.getFeito() == 0 ? 'Não' : 'Sim'}"></td>
+                <td>
+                    <a th:href="${'/remover?id=' + tarefa.getId()}">Excluir</a>
+                    <a th:href="${'/editar?id=' + tarefa.getId()}">Editar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
